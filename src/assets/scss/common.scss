@@ -1,0 +1,25 @@
+.clearfix{
+	display: inline-block;
+	&::after{
+		display: block;
+		content: '.';
+		height: 0;
+		line-height: 0;
+		clear: both;
+		visibility: hidden;
+	}
+}
+.flex{
+	display: flex;
+	// display: -webkit-flex;
+}
+.fr{
+	float: right;
+}
+.fl{
+	float: left;
+}
+.clearfix{
+	zoom: 1;
+	overflow:hidden;
+}
