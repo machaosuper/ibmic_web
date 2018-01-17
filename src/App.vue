@@ -25,6 +25,7 @@ body{
   text-align: center;
   color: #5a4c4c;
   /*margin-top: 60px;*/
+  padding-bottom: 80px;
   .container{
     padding-top: 160px;
     width: 1024px;
@@ -41,6 +42,10 @@ body{
   }
   .el-table th{
     text-align: center;
+  }
+  .no-data{
+    padding-top: 60px;
+    color: salmon
   }
     
 }

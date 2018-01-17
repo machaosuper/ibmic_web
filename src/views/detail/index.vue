@@ -6,22 +6,48 @@
     </el-breadcrumb>
     <div class="base-info flex">
       <div class="title" v-if="blogData.note">{{blogData.note.title}}</div>
-      <div>
-        <span>标签:javascript</span>
-        <span>作者:mac</span>
-        <span>日期:2018-05-01</span>
+      <div v-if="blogData.note">
+        <span>标签:{{blogData.note.category.name}}</span>
+        <span>作者:{{blogData.note.user.name}}</span>
+        <span>日期:{{blogData.note.meta.updateAt}}</span>
         <span>编辑</span>
       </div>
     </div>
     <div class="content">
       <div class="markdown-body" v-html="blogContent"></div>
     </div>
+    <div class="base-info flex">
+      <div class="title">评价</div>
+    </div>
+    <div class="content">
+      <ul class="appraise-list">
+        <li class="appraise-item flex" v-for="item in blogData.comments">
+          <div class="left">
+            <div class="user-info">
+              <span class="name">{{item.from.name}}</span>
+              <span class="time"><strong> · </strong>at: 2017-01-16</span>
+            </div>
+            <div class="appraise-content">
+              {{item.content}}
+            </div>
+          </div>
+          <i class="el-icon-edit" @click="addAppraiseUser(item.from.name)"></i> 
+        </li>
+      </ul>
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="请输入评价内容"
+        v-model="appraiseContent">
+      </el-input>
+      <el-button @click.native="submitAppraise" class="appraise-btn" type="primary">发表评价</el-button>
+    </div>
     <!-- <div class="appraise">
-      <div class="appraise-title"></div>
+      <div class="appraise-title">评价</div>
       <ul class="appraise-content">
         <li>
-          <img src="" alt="" class="portrait">
-          
+          <div class="name">name</div>
+          <div class="content">content</div>
         </li>
       </ul>
     </div> -->
@@ -34,37 +60,51 @@
 <script>
   import { mavonEditor } from 'mavon-editor'
   import 'mavon-editor/dist/css/index.css'
+  var markdownIt = mavonEditor.mixins[0].data().s_markdown
   export default {
     name: 'Detail',
     components: { mavonEditor },
     data () {
       return {
         blogData: {},
-        blogContent: ''
+        blogContent: '',
+        appraiseContent: ''
       }
     },
     created () {
-      let markdownIt = mavonEditor.mixins[0].data().s_markdown
-      this.$http.post('detail', {id: this.$route.params.id}).then((res) => {
-        console.log(res)
-        if (res.code === '000000') {
-          this.blogData = res.data
-          this.blogContent = markdownIt.render(this.blogData.note.content)
-        }
-      })
-      // console.log(this.$http)
-      // this.$http.post('user/signup', {name: 'admin', password: 'admin'}).then((res) => {
-      //   console.log(res)
-      // })
-      // this.$http.post('user/signin', {name: 'admin', password: 'admin'}).then((res) => {
-      //   console.log(res)
-      // })
+      this.getData()
     },
     mounted () {
       // console.log(markdownIt.render('# title'))
       // this.blogContent = window.markdownIt.render('# 粗体 \r\n **粗体**  \n\r## *斜体*')
     },
     methods: {
+      getData () {
+        this.$http.post('detail', {id: this.$route.params.id}).then((res) => {
+          console.log(res)
+          if (res.code === '000000') {
+            this.blogData = res.data
+            this.blogContent = markdownIt.render(this.blogData.note.content)
+          }
+        })
+      },
+      submitAppraise () {
+        this.$http.post('comment', {
+          note: this.$route.params.id,
+          content: this.appraiseContent
+        }).then((res) => {
+          console.log(res)
+          if (res.code === '000000') {
+            this.getData()
+          }
+        })
+      },
+      addAppraiseUser (name) {
+        let reg = new RegExp('@' + name, 'gi')
+        if (!reg.test(this.appraiseContent)) {
+          this.appraiseContent = this.appraiseContent + '@' + name + ' '
+        }
+      }
     }
   }
 </script>
@@ -95,6 +135,28 @@
       border-radius: 0 0 5px 5px;
       background-color: #fff;
       padding: 20px;
+      .appraise-list{
+        .appraise-item{
+          line-height: 35px;
+          align-items: center;
+          justify-content: space-between;
+          border-bottom: 1px solid #eee;
+          margin-bottom: 30px;
+          .user-info{
+            .time{
+              color: #999;
+              font-size: 14px;
+              strong{
+                font-size: 30px;
+                vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
+      .appraise-btn{
+        margin-top: 20px;
+      }
     }
   }
 </style>

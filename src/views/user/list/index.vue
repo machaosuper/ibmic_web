@@ -1,40 +1,46 @@
 <template>
   <div class="category-list">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/main/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="flex title">
-      <div>分类列表</div>
-      <el-button @click="addType">新增分类</el-button>
+      <div>用户列表</div>
+      <!-- <el-button @click="addType">新增分类</el-button> -->
     </div>
     <el-table
       class="category-table"
       size="medium"
-      :data="categoryListData"
+      :data="userListData"
       style="width: 100%"
       :row-class-name="tableRowClassName">
       <el-table-column
         prop="name"
-        label="名称"
+        label="用户名"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="count"
-        label="子数量">
+        prop="email"
+        label="用户邮箱">
       </el-table-column>
       <el-table-column
-        prop="creatDate"
+        prop="meta.createAt"
         label="日期"
         width="180">
       </el-table-column>
       
       
-      <el-table-column label="更新">
+      <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+           <el-select v-model="scope.row.role" @change="handleSelect(scope.row)"  placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+
         </template>
       </el-table-column>
       <el-table-column label="删除">
@@ -54,7 +60,23 @@
     components: {},
     data () {
       return {
-        categoryListData: []
+        userListData: [],
+        options: [{
+          value: 0,
+          label: '未激活'
+        }, {
+          value: 1,
+          label: '普通用户'
+        }, {
+          value: 2,
+          label: '专业用户'
+        }, {
+          value: 11,
+          label: '管理员'
+        }, {
+          value: 101,
+          label: '超级管理员'
+        }]
       }
     },
     created () {
@@ -62,10 +84,25 @@
     },
     methods: {
       initData () {
-        this.$http.get('category/list').then((res) => {
+        this.$http.get('user/list').then((res) => {
           console.log(res)
           if (res.code === '000000') {
-            this.categoryListData = res.data
+            this.userListData = res.data
+          }
+        })
+        // this.$http.get('category/list').then((res) => {
+        //   console.log(res)
+        //   if (res.code === '000000') {
+        //     this.categoryListData = res.data
+        //   }
+        // })
+      },
+      handleSelect (row) {
+        console.log(row)
+        this.$http.post('user/update', {id: row._id, role: row.role}).then((res) => {
+          console.log(res)
+          if (res.code === '000000') {
+            this.initData()
           }
         })
       },
@@ -83,10 +120,7 @@
       },
       handleDelete (index, item) {
         console.log(index, item)
-        this.$http.post('admin/category/edit', {
-          editType: '02',
-          categoryId: item._id
-        }).then((res) => {
+        this.$http.post('user/del', {id: item._id}).then((res) => {
           console.log(res)
           if (res.code === '000000') {
             this.initData()

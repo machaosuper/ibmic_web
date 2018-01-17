@@ -4,18 +4,19 @@
     <div class="header-nav">
       <div class="header-nav-content">
         <el-menu
-          :default-active="activeIndex2"
+          :default-active="activeIndex"
           class="el-menu-demo"
           background-color="transparent"
           mode="horizontal"
           @select="handleSelect"
           text-color="#fff"
+          :router="true"
           active-text-color="#ffd04b">
-          <el-menu-item index="1" :router="{path: '/'}">首页</el-menu-item>
-          <el-menu-item index="3" :router="{path: '/editor'}">分类管理</el-menu-item>
-          <el-menu-item index="4">用户管理</el-menu-item>
-          <el-menu-item index="5">数据管理</el-menu-item>
-        </el-menu>  
+          <el-menu-item index="/main/home">首页</el-menu-item>
+          <el-menu-item index="/admin/category/list">分类管理</el-menu-item>
+          <el-menu-item index="/admin/user/list">用户管理</el-menu-item>
+          <el-menu-item index="/admin/blog/list">数据管理</el-menu-item>
+        </el-menu>
       </div>
     </div>
     
@@ -28,11 +29,12 @@ export default {
   name: 'Header',
   data () {
     return {
-      activeIndex2: '1'
+      activeIndex: ''
     }
   },
   components: { banner },
   created () {
+    this.activeIndex = this.$route.path
   },
   methods: {
     handleSelect (key, keyPath) {

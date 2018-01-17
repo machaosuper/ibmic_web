@@ -4,23 +4,23 @@
     <div class="header-nav">
       <div class="header-nav-content">
         <el-menu
-          :default-active="activeIndex2"
+          :default-active="activeIndex"
           class="el-menu-demo"
-          background-color="transparent"
+          background-color="#545c64"
           mode="horizontal"
           @select="handleSelect"
           text-color="#fff"
+          :router="true"
           active-text-color="#ffd04b">
-          <el-menu-item index="1" :router="{path: '/'}">首页</el-menu-item>
-          <el-submenu index="2">
+          <el-menu-item index="/main/home">首页</el-menu-item>
+          <el-submenu index="/main/list/">
             <template slot="title">笔记类型</template>
-            <el-menu-item index="2-1">选项1</el-menu-item>
-            <el-menu-item index="2-2">选项2</el-menu-item>
-            <el-menu-item index="2-3">选项3</el-menu-item>
+            <el-menu-item :index="'/main/list/' + category.name + '?id=' + category._id" v-for="category in categoryList">{{category.name}}</el-menu-item>
+            
           </el-submenu>
-          <el-menu-item index="3" :router="{path: '/editor'}">新笔记</el-menu-item>
-          <el-menu-item index="4">我的笔记</el-menu-item>
-          <el-menu-item index="5">关于我</el-menu-item>
+          <el-menu-item index="/main/editor" :router="{path: '/editor'}">新笔记</el-menu-item>
+          <el-menu-item index="/main/list/my">我的笔记</el-menu-item>
+          <el-menu-item index="/main/about">关于我</el-menu-item>
         </el-menu>  
       </div>
     </div>
@@ -33,9 +33,10 @@ export default {
   name: 'Header',
   data () {
     return {
-      activeIndex2: '1',
+      activeIndex: '',
       showSignin: false,
       showSignup: false,
+      categoryList: [],
       name: '',
       password: '',
       email: '',
@@ -44,10 +45,18 @@ export default {
   },
   components: { banner },
   created () {
+    // console.log(this.$route)
+    this.activeIndex = this.$route.path
+    this.$http.get('category/list').then((res) => {
+      console.log(res)
+      if (res.code === '000000') {
+        this.categoryList = res.data
+      }
+    })
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     },
     // 登录
     signin () {

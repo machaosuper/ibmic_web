@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'Header',
   data () {
@@ -100,10 +101,13 @@ export default {
       console.log(res)
       if (res.code === '000000') {
         this.user = res.data
+        // console.log(this.updateUser)
+        this.updateUser({user: res.data})
       }
     })
   },
   methods: {
+    ...mapMutations(['updateUser']),
     // 登录
     signin () {
       this.$http.post('user/signin', {name: this.name, password: this.password}).then((res) => {

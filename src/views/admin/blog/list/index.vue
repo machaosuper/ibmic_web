@@ -1,41 +1,37 @@
 <template>
   <div class="category-list">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/main/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>数据管理</el-breadcrumb-item>
     </el-breadcrumb>
     <div class="flex title">
-      <div>分类列表</div>
-      <el-button @click="addType">新增分类</el-button>
+      <div>笔记列表</div>
+      <!-- <el-button @click="addType">新增分类</el-button> -->
     </div>
     <el-table
       class="category-table"
       size="medium"
-      :data="categoryListData"
+      :data="listData.notes"
       style="width: 100%"
       :row-class-name="tableRowClassName">
       <el-table-column
-        prop="name"
-        label="名称"
+        prop="title"
+        label="笔记名"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="count"
-        label="子数量">
+        prop="user.name"
+        label="来自用户">
       </el-table-column>
       <el-table-column
-        prop="creatDate"
+        prop="pv"
+        label="浏览量"
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="meta.createAt"
         label="日期"
         width="180">
-      </el-table-column>
-      
-      
-      <el-table-column label="更新">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-        </template>
       </el-table-column>
       <el-table-column label="删除">
         <template slot-scope="scope">
@@ -45,47 +41,91 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="pagination">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :background="true"
+        :page-size="pageSize"
+        layout="total, prev, pager, next"
+        :total="listData.total">
+      </el-pagination>  
+    </div>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   export default {
     name: 'CategoryList',
     components: {},
     data () {
       return {
-        categoryListData: []
+        currentPage: 1,
+        pageSize: 10,
+        listData: {}
       }
     },
     created () {
       this.initData()
+      // console.log(this.user)
+    },
+    mounted () {
+      // this.$nextTick(() => {
+      //   console.log(this.user)
+      // })
+      if (this.user.role <= 10) {
+        console.log(this.user.role)
+        this.$router.push('/main/home')
+      }
+    },
+    watch: {
+      'user' (to, from) {
+        console.log(this.user)
+        if (this.user.role <= 10) {
+          console.log(this.user.role)
+          this.$router.push('/main/home')
+        }
+      }
+    },
+    computed: {
+      ...mapState({
+        user: state => state.user.user
+      })
     },
     methods: {
-      initData () {
-        this.$http.get('category/list').then((res) => {
+      initData (pageNo) {
+        this.$http.post('list', {pageSize: this.pageSize, pageNo: (pageNo || 0)}).then((res) => {
           console.log(res)
           if (res.code === '000000') {
-            this.categoryListData = res.data
+            this.listData = res.data
           }
         })
       },
       tableRowClassName ({row, rowIndex}) {
-        if (rowIndex === 1) {
+        if ((rowIndex % 4) === 1) {
           return 'warning-row'
-        } else if (rowIndex === 3) {
+        } else if ((rowIndex % 4) === 3) {
           return 'success-row'
+        } else {
+          return ''
         }
-        return ''
+        // if (rowIndex === 1) {
+        //   return 'warning-row'
+        // } else if (rowIndex === 3) {
+        //   return 'success-row'
+        // }
+        // return ''
       },
       handleEdit (index, item) {
         // console.log(index, row)
 
       },
       handleDelete (index, item) {
-        console.log(index, item)
-        this.$http.post('admin/category/edit', {
-          editType: '02',
-          categoryId: item._id
+        // console.log(index, item)
+        this.$http.post('del', {
+          id: item._id
         }).then((res) => {
           console.log(res)
           if (res.code === '000000') {
@@ -108,6 +148,11 @@
             message: '取消输入'
           })
         })
+      },
+      handleCurrentChange () {
+        this.initData(this.currentPage - 1)
+      },
+      handleSizeChange () {
       }
     }
   }
@@ -130,6 +175,10 @@
       background-color: #9DD6C5;
       padding: 0 20px;
       border-radius: 5px 5px 0 0;
+    }
+    .pagination{
+      margin-top: 30px;
+      text-align: right;
     }
   }
 

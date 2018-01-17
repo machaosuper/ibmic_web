@@ -78,7 +78,7 @@
       }
     },
     created () {
-      this.$http.get('admin/category/list').then((res) => {
+      this.$http.get('category/list').then((res) => {
         console.log(res)
         if (res.code === '000000') {
           this.categoryListData = res.data
@@ -87,8 +87,6 @@
     },
     methods: {
       submit () {
-        console.log(this.blogType)
-        console.log(this.blogContent.toString())
         let params = {
           note: {
             title: this.blogTitle,
@@ -99,6 +97,9 @@
         }
         this.$http.post('save', params).then((res) => {
           console.log(res)
+          if (res.code === '000000') {
+            this.$router.push({name: 'Detail', params: {id: res.data._id}})
+          }
         })
       }
     }

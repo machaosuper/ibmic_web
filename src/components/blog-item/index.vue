@@ -18,12 +18,12 @@
     	<li class="user">
     		<!-- <i class="el-icon-view"></i> -->阅读({{itemData.pv}})
     	</li>
-    	<li class="user">
-    		<!-- <i class="el-icon-view"></i> -->评论(10)
-    	</li>
-    	<li class="user">
-    		<!-- <i class="el-icon-star-off"></i> -->收藏(10)
-    	</li>
+    	<!-- <li class="user"> -->
+    		<!-- <i class="el-icon-view"></i>评论(10) -->
+    	<!-- </li> -->
+    	<!-- <li class="user"> -->
+    		<!-- <i class="el-icon-star-off"></i>收藏(10) -->
+    	<!-- </li> -->
     	
     </ul>
   </div>
@@ -50,6 +50,7 @@ export default {
 
 <style lang="scss">
 	.blog-item{
+    cursor: pointer;
 		margin: 10px 0;
 		background-color: #fff;
 		border-radius: 5px;

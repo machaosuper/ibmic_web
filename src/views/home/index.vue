@@ -4,8 +4,9 @@
       <li v-for="item in blogListData.notes" @click="$router.push('/main/detail/' + item._id)">
         <BlogItem :itemData="item"/>
       </li>
+      <li class="no-data" v-if="blogListData.notes && blogListData.notes.length === 0">没有数据</li>
     </ul>
-    <div class="pagination">
+    <div class="pagination" v-if="blogListData.notes && blogListData.notes.length > 0">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -30,7 +31,7 @@
       return {
         msg: 'Welcome to Your Vue.js App',
         currentPage: 1,
-        pageSize: 2,
+        pageSize: 10,
         blogListData: {}
       }
     },
@@ -61,6 +62,7 @@
   .home{
     .pagination{
       text-align: right;
+      margin-top: 30px;
     }
     .el-dialog, .el-pager li{
         background: transparent!important;

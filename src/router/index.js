@@ -7,6 +7,9 @@ import Editor from '@/views/editor'
 import Main from '@/views/main'
 import Admin from '@/views/admin'
 import CategoryList from '@/views/category/list'
+import userList from '@/views/user/list'
+import blogList from '@/views/admin/blog/list'
+import About from '@/views/about'
 
 Vue.use(Router)
 
@@ -25,7 +28,7 @@ export default new Router({
           name: 'home',
           component: Home
         }, {
-          path: 'list',
+          path: 'list/:type',
           name: 'List',
           component: List
         },
@@ -38,7 +41,13 @@ export default new Router({
           path: 'editor',
           name: 'Editor',
           component: Editor
+        },
+        {
+          path: 'about',
+          name: 'About',
+          component: About
         }
+
       ]
     },
     {
@@ -48,25 +57,21 @@ export default new Router({
       children: [
         {
           path: '/',
-          redirect: 'home'
-        }, {
-          path: 'home',
-          name: 'home',
-          component: Home
+          redirect: 'category/list'
         }, {
           path: 'category/list',
           name: 'CategoryList',
           component: CategoryList
         },
         {
-          path: 'detail/:id',
-          name: 'Detail',
-          component: Detail
+          path: 'user/list',
+          name: 'userList',
+          component: userList
         },
         {
-          path: 'editor',
-          name: 'Editor',
-          component: Editor
+          path: 'blog/list',
+          name: 'blogList',
+          component: blogList
         }
       ]
     },
