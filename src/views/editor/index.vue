@@ -19,7 +19,7 @@
       
       <el-input class="disc-input" v-model="blogDisc" type="textarea" :rows="2" :maxlength="50" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="请输入笔记相关描述"></el-input>
       <div class="editor-util">
-        <mavon-editor v-model="blogContent" :subfield="false" :ishljs = "true" :toolbars="toolbars"/> 
+        <mavon-editor ref="md" v-model="blogContent" @imgAdd="imgAdd" @imgDel="imgDel" :subfield="false" :ishljs = "true" :toolbars="toolbars"/> 
       </div>
        <el-button class="submit-btn" type="primary" @click="submit">发布</el-button>
     </div>
@@ -101,7 +101,20 @@
             this.$router.push({name: 'Detail', params: {id: res.data._id}})
           }
         })
-      }
+      },
+      imgAdd (pos, file) {
+        // console.log(pos)
+        // console.log(file)
+        let formdata = new FormData()
+        formdata.append('image', file)
+        this.$http.post('upload', formdata, {headers: {'Content-Type': 'multipart/form-data'}}).then((res) => {
+          console.log(res)
+          if (res.code === '000000') {
+            this.$refs.md.$img2Url(pos, res.data)
+          }
+        })
+      },
+      imgDel () {}
     }
   }
 </script>

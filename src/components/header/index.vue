@@ -15,7 +15,7 @@
           <el-menu-item index="/main/home">首页</el-menu-item>
           <el-submenu index="/main/list/">
             <template slot="title">笔记类型</template>
-            <el-menu-item :index="'/main/list/' + category.name + '?id=' + category._id" v-for="category in categoryList">{{category.name}}</el-menu-item>
+            <el-menu-item :index="'/main/list/' + category.name + '?id=' + category._id" v-for="(category, index) in categoryList" :key="index">{{category.name}}</el-menu-item>
             
           </el-submenu>
           <el-menu-item index="/main/editor" :router="{path: '/editor'}">新笔记</el-menu-item>

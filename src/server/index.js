@@ -21,7 +21,11 @@ Axios.interceptors.request.use(
       config.method === 'delete'
     ) {
       // 序列化
-      config.data = qs.stringify(config.data)
+      // debugger
+      if (config.url !== 'upload') {
+        config.data = qs.stringify(config.data)
+      }
+      console.log(config.data)
     }
 
     // 若是有做鉴权token , 就给头部带上token
