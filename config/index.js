@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/blog': {
-            target: 'http://localhost:3000/',
+            target: 'http://api.ibmic.cn/',
             changeOrigin: true
         }
     },

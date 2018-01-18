@@ -33,7 +33,7 @@
         <span>密码：</span>
         <el-input
           placeholder="请输入用户密码"
-          v-model="password">
+          v-model="password" type="password">
           <i slot="prefix" class="el-input__icon"></i>
         </el-input>
       </div>
@@ -69,7 +69,7 @@
         <span>密码：</span>
         <el-input
           placeholder="请输入用户密码"
-          v-model="password">
+          v-model="password" type="password">
           <i slot="prefix" class="el-input__icon"></i>
         </el-input>
       </div>
@@ -114,6 +114,7 @@ export default {
         console.log(res)
         if (res.code === '000000') {
           this.user = res.data
+          this.updateUser({user: res.data})
           this.showSignin = false
         }
       })
@@ -124,6 +125,7 @@ export default {
         console.log(res)
         if (res.code === '000000') {
           this.user = {}
+          this.updateUser({user: {}})
         }
       })
     },
@@ -133,6 +135,7 @@ export default {
         console.log(res)
         if (res.code === '000000') {
           this.user = res.data
+          this.updateUser({user: res.data})
           this.showSignup = false
         }
       })

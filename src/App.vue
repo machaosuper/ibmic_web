@@ -5,12 +5,26 @@
     <!-- <div class="container"> -->
       <router-view/> 
     <!-- </div> -->
+    <div v-loading.fullscreen.lock="loading"></div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  name: 'app'
+  name: 'app',
+  data () {
+    return {
+    }
+  },
+  computed: {
+    ...mapState(['loading'])
+  },
+  watch: {
+    'loading' () {
+      // console.log(this.loading)
+    }
+  }
 }
 </script>
 

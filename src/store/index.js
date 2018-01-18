@@ -4,13 +4,19 @@ import user from './user'
 
 Vue.use(Vuex)
 
-const state = {}
+const state = {
+  loading: false
+}
 
 const actions = {}
 
 const getters = {}
 
-const mutations = {}
+const mutations = {
+  updateLoading (state, payload) {
+    state.loading = payload.loading
+  }
+}
 
 export default new Vuex.Store({
   state,

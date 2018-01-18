@@ -1,5 +1,9 @@
 import axios from 'axios'
+import Vue from 'vue'
 import qs from 'qs'
+import { Message } from 'element-ui'
+// import { loading } from 'element-ui'
+import store from '../store'
 
 const Axios = axios.create({
   baseURL: '/blog/',
@@ -11,10 +15,20 @@ const Axios = axios.create({
   }
 })
 
+// console.log(Vue.nextTick)
+// let Loading = loading.service({
+//   lock: false,
+//   text: 'Loading',
+//   spinner: 'el-icon-loading',
+//   background: 'rgba(0, 0, 0, 0.7)'
+// })
+// console.log(Loading)
+
 // POST传参序列化(添加请求拦截器)
 Axios.interceptors.request.use(
   config => {
     // 在发送请求之前做某件事
+    store.commit('updateLoading', {loading: true})
     if (
       config.method === 'post' ||
       config.method === 'put' ||
@@ -25,7 +39,7 @@ Axios.interceptors.request.use(
       if (config.url !== 'upload') {
         config.data = qs.stringify(config.data)
       }
-      console.log(config.data)
+      // console.log(config.data)
     }
 
     // 若是有做鉴权token , 就给头部带上token
@@ -48,24 +62,41 @@ Axios.interceptors.request.use(
 // 返回状态判断(添加响应拦截器)
 Axios.interceptors.response.use(
   res => {
+    Vue.nextTick(() => {
+      store.commit('updateLoading', {loading: false})
+    })
+    // setTimeout(() => {
+    //   Loading.close()
+    // }, 1000)
     // 对响应数据做些事
     // if (res.data && !res.data.success) {
-    //   // Message({
-    //   //   //  饿了么的消息弹窗组件,类似toast
-    //   //   showClose: true,
-    //   //   message: res.data.error.message.message
-    //   //     ? res.data.error.message.message
-    //   //     : res.data.error.message,
-    //   //   type: 'error'
-    //   // })
+    //   Message({
+    //     //  饿了么的消息弹窗组件,类似toast
+    //     showClose: true,
+    //     message: res.data.error.message.message
+    //       ? res.data.error.message.message
+    //       : res.data.error.message,
+    //     type: 'error'
+    //   })
     //   return Promise.reject(res.data.error.message)
     // }
     if (res.status === 200 && res.data) {
+      if (res.data.code !== '000000') {
+        Message({
+          //  饿了么的消息弹窗组件,类似toast
+          showClose: true,
+          message: res.data.msg || '系统异常',
+          type: 'error'
+        })
+      }
       return res.data
     }
     return res
   },
   error => {
+    Vue.nextTick(() => {
+      store.commit('updateLoading', {loading: false})
+    })
     // 用户登录的时候会拿到一个基础信息,比如用户名,token,过期时间戳
     // 直接丢localStorage或者sessionStorage
     // if (!window.localStorage.getItem('loginUserBaseInfo')) {

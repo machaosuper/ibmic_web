@@ -8,10 +8,10 @@
       <li v-for="item in blogListData.notes" @click="$router.push('/main/detail/' + item._id)">
         <BlogItem :itemData="item"/>
       </li>
-      <li class="no-data" v-if="blogListData.notes.length === 0">没有数据</li>
+      <li class="no-data" v-if="!blogListData.notes || blogListData.notes.length === 0">没有数据</li>
     </ul>
 
-    <div class="pagination" v-if="blogListData.notes.length > 0">
+    <div class="pagination" v-if="blogListData.notes && blogListData.notes.length > 0">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -58,8 +58,6 @@
     },
     watch: {
       '$route' (to, from) {
-        console.log(to)
-        console.log(from)
         if (to.name === from.name && to.name === 'List') {
           this.initData()
         }

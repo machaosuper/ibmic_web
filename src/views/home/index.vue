@@ -32,7 +32,8 @@
         msg: 'Welcome to Your Vue.js App',
         currentPage: 1,
         pageSize: 10,
-        blogListData: {}
+        blogListData: {},
+        loading: true
       }
     },
     created () {

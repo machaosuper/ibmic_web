@@ -25,6 +25,7 @@
 
 <script>
 import banner from './banner'
+import { mapState } from 'vuex'
 export default {
   name: 'Header',
   data () {
@@ -32,13 +33,29 @@ export default {
       activeIndex: ''
     }
   },
+  watch: {
+    'user' () {
+      console.log(this.user)
+      if (!this.user.role || this.user.role <= 10) {
+        this.$router.push('/main/home')
+      }
+    }
+  },
   components: { banner },
+  computed: {
+    ...mapState({
+      user: state => state.user.user
+    })
+  },
   created () {
     this.activeIndex = this.$route.path
+    if (!this.user.role || this.user.role <= 10) {
+      this.$router.push('/main/home')
+    }
   },
   methods: {
     handleSelect (key, keyPath) {
-      console.log(key, keyPath)
+      // console.log(key, keyPath)
     }
   }
 }
