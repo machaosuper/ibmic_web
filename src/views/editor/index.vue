@@ -136,6 +136,9 @@
       .select-type-title, .disc-input, .submit-btn, .editor-util{
         margin-top: 20px;
       }
+      .editor-util .v-note-wrapper{
+        max-height: 600px;
+      }
       .select-type-title{
         .title-input{
           min-width: 500px;
